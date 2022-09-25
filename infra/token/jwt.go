@@ -4,27 +4,42 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-type TokenGenerator interface {
-	Generate(key string, payload interface{}) (string, error)
+type TokenGeneratorInput struct {
+	Key     string
+	Payload interface{}
 }
 
-const jwtType = "JWT"
+type TokenGeneratorOutput struct {
+	Token string
+	Error error
+}
+
+type TokenGenerator interface {
+	Generate(TokenGeneratorInput) TokenGeneratorOutput
+}
+
+const (
+	jwtAlgo = "HS256"
+	jwtType = "JWT"
+)
 
 type JWT struct {
-	algo   string
 	secret []byte
 }
 
-func NewJWT(algo string, secret []byte) *JWT {
-	return &JWT{algo: algo, secret: secret}
+func NewJWT(secret []byte) *JWT {
+	return &JWT{secret: secret}
 }
 
-func (j *JWT) Generate(key string, payload interface{}) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload.(*jwt.MapClaims))
+func (j *JWT) Generate(in TokenGeneratorInput) (out TokenGeneratorOutput) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, in.Payload.(*jwt.MapClaims))
+
+	token.Header["kid"] = in.Key
+
 	token.Header["typ"] = jwtType
+	token.Header["alg"] = jwtAlgo
 
-	token.Header["alg"] = j.algo
-	token.Header["kid"] = key
+	out.Token, out.Error = token.SignedString(j.secret)
 
-	return token.SignedString(j.secret)
+	return
 }

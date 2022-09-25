@@ -1,20 +1,36 @@
 package token_test
 
 import (
-	"fmt"
 	"testing"
-	"time"
 
 	"github.com/MarceloMPJR/lambda-go/infra/token"
 	"github.com/golang-jwt/jwt/v4"
 )
 
 func TestJWT_Generate(t *testing.T) {
-	j := token.NewJWT("HS256", []byte("fP3Gk5d3lyFmLKDQQKafl5Z20iF9R1fa"))
-	str, _ := j.Generate("ar9rVhd9ORBBJu1T9Eon2SLlCovhtO57", &jwt.MapClaims{
-		"name": "testes",
-		"exp":  time.Now().Add(1 * time.Hour).Unix(),
-	})
+	secret := "TESTE_1"
+	key := "TESTE_2"
+	payload := &jwt.MapClaims{
+		"name": "username",
+		"exp":  123456789,
+	}
+	input := token.TokenGeneratorInput{
+		Key:     key,
+		Payload: payload,
+	}
 
-	fmt.Println(str)
+	expectedHeader := "eyJhbGciOiJIUzI1NiIsImtpZCI6IlRFU1RFXzIiLCJ0eXAiOiJKV1QifQ"
+	expectedBody := "eyJleHAiOjEyMzQ1Njc4OSwibmFtZSI6InVzZXJuYW1lIn0.zwFlJ295Iyl8wlvH22Ia1w0lt51J8Qnp_FT2i-lE3d4"
+	expectedToken := expectedHeader + "." + expectedBody
+
+	j := token.NewJWT([]byte(secret))
+	out := j.Generate(input)
+
+	if out.Error != nil {
+		t.Fatalf("unexpected error: %v", out.Error)
+	}
+
+	if expectedToken != out.Token {
+		t.Errorf("result: %v, expected: %v", out.Token, expectedToken)
+	}
 }
