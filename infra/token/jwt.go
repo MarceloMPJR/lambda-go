@@ -1,22 +1,6 @@
 package token
 
-import (
-	"github.com/golang-jwt/jwt/v4"
-)
-
-type TokenGeneratorInput struct {
-	Key     string
-	Payload interface{}
-}
-
-type TokenGeneratorOutput struct {
-	Token string
-	Error error
-}
-
-type TokenGenerator interface {
-	Generate(TokenGeneratorInput) TokenGeneratorOutput
-}
+import "github.com/golang-jwt/jwt/v4"
 
 const (
 	jwtAlgo = "HS256"
