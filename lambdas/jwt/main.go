@@ -2,38 +2,28 @@ package main
 
 import (
 	"context"
-	"os"
-	"time"
 
+	"github.com/MarceloMPJR/lambda-go/entity"
+	"github.com/MarceloMPJR/lambda-go/infra/app"
+	"github.com/MarceloMPJR/lambda-go/services/users"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/golang-jwt/jwt/v4"
 )
 
-const (
-	jwtAlgo = "HS256"
-	jwtType = "JWT"
+type UserParams struct {
+	Name string `json:"name"`
+}
 
-	jwtKey = "ar9rVhd9ORBBJu1T9Eon2SLlCovhtO57" // BY USER
-)
+func handlerGenerate(ctx context.Context, userParam UserParams) (string, error) {
+	authService := users.NewAuthorizeService(app.CurrentApp.TokenGenerator, app.CurrentApp.ConsumerInfo)
+	user := entity.User{Name: userParam.Name}
+	out := authService.Authorize(user)
+
+	return out.Token, out.Error
+}
 
 func main() {
+	app.SetupTokenGenerator()
+	app.SetupConsumerInfo()
+
 	lambda.Start(handlerGenerate)
-}
-
-func handlerGenerate(ctx context.Context) (string, error) {
-	claims := &jwt.MapClaims{
-		"name": "testes",
-		"exp":  time.Now().Add(1 * time.Hour).Unix(),
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token.Header["alg"] = jwtAlgo
-	token.Header["kid"] = jwtKey
-	token.Header["typ"] = jwtType
-
-	return token.SignedString([]byte(hmacSecret()))
-}
-
-func hmacSecret() string {
-	return os.Getenv("HMAC_SECRET")
 }
