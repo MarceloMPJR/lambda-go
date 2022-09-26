@@ -3,6 +3,7 @@ package apigetway
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -21,8 +22,8 @@ type ConsumerInfoResponse struct {
 	Key string `json:"key"`
 }
 
-func (k *Kong) GetConsumerInfo(ConsumerInfoInput) (out ConsumerInfoOutput) {
-	resp, err := http.Get(k.url)
+func (k *Kong) GetConsumerInfo(in ConsumerInfoInput) (out ConsumerInfoOutput) {
+	resp, err := http.Get(fmt.Sprintf("%s/consumers/%s/%s", k.url, in.UserName, in.AuthType))
 	if err != nil || resp.StatusCode > 299 {
 		out.Error = errors.New(KongCommunicationFailure)
 		return
