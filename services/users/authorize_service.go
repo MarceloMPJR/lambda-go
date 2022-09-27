@@ -16,7 +16,7 @@ const (
 
 	authType = "jwt"
 
-	validUser     = "test"
+	validUser     = "testes"
 	validPassword = "123456"
 )
 
@@ -47,8 +47,8 @@ func (a *AuthorizeService) keyByUsername(username string) (string, error) {
 	return consuerInfoOutput.Key, consuerInfoOutput.Error
 }
 
-func (AuthorizeService) buildPayload(user entity.User) UserPayload {
-	return UserPayload{
+func (AuthorizeService) buildPayload(user entity.User) token.Payload {
+	return token.Payload{
 		"name": user.Name,
 		"exp":  time.Now().Add(1 * time.Hour).Unix(),
 	}

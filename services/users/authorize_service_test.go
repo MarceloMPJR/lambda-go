@@ -12,7 +12,7 @@ import (
 
 func Test_Authorize(t *testing.T) {
 	t.Run("when user is authorized", func(t *testing.T) {
-		user := entity.User{Name: "test", Password: "123456"}
+		user := entity.User{Name: "testes", Password: "123456"}
 
 		t.Run("when get info consumer has success", func(t *testing.T) {
 			mockConsumerInfo := &MockConsumerInfo{KeyResult: "KeY", ErrorResult: nil}
