@@ -4,13 +4,12 @@ import (
 	"testing"
 
 	"github.com/MarceloMPJR/lambda-go/infra/token"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 func TestJWT_Generate(t *testing.T) {
 	secret := "TESTE_1"
 	key := "TESTE_2"
-	payload := &jwt.MapClaims{
+	payload := token.Payload{
 		"name": "username",
 		"exp":  123456789,
 	}

@@ -16,7 +16,7 @@ func NewJWT(secret []byte) *JWT {
 }
 
 func (j *JWT) Generate(in TokenGeneratorInput) (out TokenGeneratorOutput) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, in.Payload.(*jwt.MapClaims))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims(in.Payload))
 
 	token.Header["kid"] = in.Key
 

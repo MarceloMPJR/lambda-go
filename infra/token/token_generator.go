@@ -1,8 +1,10 @@
 package token
 
+type Payload map[string]interface{}
+
 type TokenGeneratorInput struct {
 	Key     string
-	Payload interface{}
+	Payload Payload
 }
 
 type TokenGeneratorOutput struct {
