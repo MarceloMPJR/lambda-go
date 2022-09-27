@@ -11,7 +11,7 @@ import (
 
 func TestKong_GetConsumerInfo(t *testing.T) {
 	t.Run("when username is valid", func(t *testing.T) {
-		username := "test"
+		username := "testes"
 
 		t.Run("when type of auth is valid", func(t *testing.T) {
 			authType := "jwt"
@@ -96,8 +96,8 @@ func serverTestHTTP(userName, authType, key string, status int) *httptest.Server
 			fmt.Fprint(w, "error")
 		}
 
-		if userName == "test" && authType == "jwt" {
-			responseBody := fmt.Sprintf(`{"key": "%s"}`, key)
+		if userName == "testes" && authType == "jwt" {
+			responseBody := fmt.Sprintf(`{ "data": [{"key": "%s"}] }`, key)
 			fmt.Fprint(w, responseBody)
 
 			return

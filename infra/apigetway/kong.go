@@ -19,6 +19,10 @@ func NewKong(url string) *Kong {
 const KongCommunicationFailure = "communication failure"
 
 type ConsumerInfoResponse struct {
+	Infos []ConsumerInfos `json:"data"`
+}
+
+type ConsumerInfos struct {
 	Key string `json:"key"`
 }
 
@@ -38,6 +42,10 @@ func (k *Kong) GetConsumerInfo(in ConsumerInfoInput) (out ConsumerInfoOutput) {
 	respKong := ConsumerInfoResponse{}
 	json.Unmarshal(body, &respKong)
 
-	out.Key = respKong.Key
+	if len(respKong.Infos) == 0 {
+		return
+	}
+
+	out.Key = respKong.Infos[0].Key
 	return
 }
