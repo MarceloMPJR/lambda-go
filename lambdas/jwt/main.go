@@ -9,13 +9,18 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-type UserParams struct {
-	Name string `json:"name"`
+type Event struct {
+	User UserParams `json:"request_body_args"`
 }
 
-func handlerGenerate(ctx context.Context, userParam UserParams) (string, error) {
+type UserParams struct {
+	Name     string `json:"username"`
+	Password string `json:"password"`
+}
+
+func handlerGenerate(ctx context.Context, event Event) (string, error) {
 	authService := users.NewAuthorizeService(app.CurrentApp.TokenGenerator, app.CurrentApp.ConsumerInfo)
-	user := entity.User{Name: userParam.Name}
+	user := entity.User{Name: event.User.Name, Password: event.User.Password}
 	out := authService.Authorize(user)
 
 	return out.Token, out.Error
